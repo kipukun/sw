@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sw</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: whitesmoke;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            align-content: stretch;
+        }
+
+        .switch {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            background-color: black;
+            color: whitesmoke;
+        }
+
+        .switch h1 {
+            text-align: center;
+            width: 100px;
+            height: 100px;
+        }
+
+        .on {
+            background-color: whitesmoke;
+            color: black;
+        }
+
+        .mangs {
+            position: absolute;
+            animation: mymove 1s infinite;
+            animation-timing-function: ease-out;
+        }
+
+        @keyframes mymove {
+            from {
+                top: 0px;
+            }
+
+            to {
+                top: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <img class="mangs" src="mango.png"> -->
+    <div class="switch{{if .PlexOn }} on {{end}}" id="plex">
+        <h1>PLEX</h1>
+    </div>
+    <div class="switch{{if .SteamOn }} on {{end}}" id="steam">
+        <h1>STEAM</h1>
+    </div>
+
+    <script>
+        const apps = {
+            PLEX: 0,
+            STEAM: 1,
+        }
+        const plex = document.getElementById('plex');
+        const steam = document.getElementById('steam');
+        plex.addEventListener('click', event => {
+            if (plex.className.includes("on")) {
+                return
+            }
+            fetch("/switch", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ application: apps.PLEX })
+            })
+            .then(res => res.text())
+            .then(d => {
+                if (d != "success") {
+                    console.log(d)
+                    return
+                }
+            })
+
+            plex.classList.toggle('on')
+            steam.classList.toggle('on')
+
+        });
+        steam.addEventListener('click', event => {
+            if (steam.className.includes("on")) {
+                return
+            }
+            fetch("/switch", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ application: apps.PLEX })
+            })
+            .then(res => res.text())
+            .then(d => {
+                if (d != "success") {
+                    console.log(d)
+                    return
+                }
+            })
+            plex.classList.toggle('on')
+            steam.classList.toggle('on')
+        });
+    </script>
+</body>
+
+</html>
